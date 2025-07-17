@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <h1 className='text-3xl font-bold underline'>Hello World!...</h1>
-    </>
-  )
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route>{/* User Layout */}</Route>
+                <Route>{/* Admin Lauout */}</Route>
+            </Routes>
+        </BrowserRouter>
+    )
 }
 
 export default App
