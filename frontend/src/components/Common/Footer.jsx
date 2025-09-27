@@ -25,8 +25,14 @@ const Footer = () => {
                     <ul className="space-y-2 text-gray-600">
                         <li>
                             <Link to="#" className="hover:text-gray-500 transition-colors">Men's Top Wear</Link>
+                        </li>
+                        <li>
                             <Link to="#" className="hover:text-gray-500 transition-colors">Women's Top Wear</Link>
+                        </li>
+                        <li>
                             <Link to="#" className="hover:text-gray-500 transition-colors">Men's Bottom Wear</Link>
+                        </li>
+                        <li>
                             <Link to="#" className="hover:text-gray-500 transition-colors">Women's Bottom Wear</Link>
                         </li>
                     </ul>
@@ -37,8 +43,14 @@ const Footer = () => {
                     <ul className="space-y-2 text-gray-600">
                         <li>
                             <Link to="#" className="hover:text-gray-500 transition-colors">Contact Us</Link>
+                        </li>
+                        <li>
                             <Link to="#" className="hover:text-gray-500 transition-colors">About Us</Link>
+                        </li>
+                        <li>
                             <Link to="#" className="hover:text-gray-500 transition-colors">FAQs</Link>
+                        </li>
+                        <li>
                             <Link to="#" className="hover:text-gray-500 transition-colors">Features</Link>
                         </li>
                     </ul>
