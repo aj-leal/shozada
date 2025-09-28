@@ -1,4 +1,5 @@
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi"
+import { Link } from "react-router-dom"
 
 const NewArrivals = () => {
     const newArrivals = [
@@ -8,7 +9,7 @@ const NewArrivals = () => {
             price: 120,
             images: [
                 {
-                    url: "https://picsum.photos/500/500/random=1",
+                    url: "https://picsum.photos/500/500?random=1",
                     altText: "Stylish Jacket",
                 },
             ],
@@ -19,7 +20,7 @@ const NewArrivals = () => {
             price: 120,
             images: [
                 {
-                    url: "https://picsum.photos/500/500/random=2",
+                    url: "https://picsum.photos/500/500?random=2",
                     altText: "Stylish Jacket",
                 },
             ],
@@ -30,7 +31,7 @@ const NewArrivals = () => {
             price: 120,
             images: [
                 {
-                    url: "https://picsum.photos/500/500/random=3",
+                    url: "https://picsum.photos/500/500?random=3",
                     altText: "Stylish Jacket",
                 },
             ],
@@ -41,7 +42,7 @@ const NewArrivals = () => {
             price: 120,
             images: [
                 {
-                    url: "https://picsum.photos/500/500/random=4",
+                    url: "https://picsum.photos/500/500?random=4",
                     altText: "Stylish Jacket",
                 },
             ],
@@ -52,7 +53,7 @@ const NewArrivals = () => {
             price: 120,
             images: [
                 {
-                    url: "https://picsum.photos/500/500/random=5",
+                    url: "https://picsum.photos/500/500?random=5",
                     altText: "Stylish Jacket",
                 },
             ],
@@ -63,7 +64,7 @@ const NewArrivals = () => {
             price: 120,
             images: [
                 {
-                    url: "https://picsum.photos/500/500/random=6",
+                    url: "https://picsum.photos/500/500?random=6",
                     altText: "Stylish Jacket",
                 },
             ],
@@ -74,7 +75,7 @@ const NewArrivals = () => {
             price: 120,
             images: [
                 {
-                    url: "https://picsum.photos/500/500/random=7",
+                    url: "https://picsum.photos/500/500?random=7",
                     altText: "Stylish Jacket",
                 },
             ],
@@ -85,7 +86,7 @@ const NewArrivals = () => {
             price: 120,
             images: [
                 {
-                    url: "https://picsum.photos/500/500/random=8",
+                    url: "https://picsum.photos/500/500?random=8",
                     altText: "Stylish Jacket",
                 },
             ],
@@ -102,13 +103,28 @@ const NewArrivals = () => {
                 </p>
 
                 {/* Scroll Buttons */}
-                <div className="absolute right-0 bottom-[-30px] flex space-x-2">
+                <div className="absolute right-0 bottom-38 flex space-x-2">
                     <button className="p-2 rounded border border-gray-400 bg-white text-black">
                         <FiChevronLeft className="text-2xl" />
                     </button>
                     <button className="p-2 rounded border border-gray-400 bg-white text-black">
                         <FiChevronRight className="text-2xl" />
                     </button>
+                </div>
+
+                {/* Scrollable Content */}
+                <div className="container mx-auto overflow-x-scroll flex space-x-6 relative">
+                    {newArrivals.map((product) => (
+                        <div key={product._id}>
+                            <img src={product.images[0]?.url} alt={product.images[0]?.altText || product.name} />
+                            <div className="absolute bottom-0 left-0 right-0 bg-black/0 backdrop-blur-md text-white p-4 rounded-b-lg">
+                                <Link to={`/product/${product._id}`} className="block">
+                                    <h4 className="font-medium">{product.name}</h4>
+                                    <p className="mt-1">${product.price}</p>
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>
