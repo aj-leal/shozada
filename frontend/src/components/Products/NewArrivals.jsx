@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
+import { useCallback } from "react";
 import { useRef } from "react"
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi"
 import { Link } from "react-router-dom"
@@ -8,9 +9,9 @@ const NewArrivals = () => {
     const scrollRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(false);
-    const [canScrollRight, setCanSrcollRight] = useState(true);
-
+    const [scrollLeft, setScrollLeft] = useState(0);
+    const [canScrollRight, setCanScrollRight] = useState(true);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
     const newArrivals = [
         {
             _id: "1",
@@ -102,27 +103,65 @@ const NewArrivals = () => {
         },
     ]
 
-    // Update Scroll Buttons
-    const updateScrollButtons = () => {
+    const handleWheel = (e) => {
+        e.preventDefault();
+
         const container = scrollRef.current;
-        console.log({
-            scrollLeft: container.scrollLeft,
-            clientWidth: container.clientWidth,
-            scrollWidth: container.scrollWidth,
-        });
+        const scrollAmount = e.deltaY || e.deltaX;
+        const scrollSpeed = 1;
+        container.scrollLeft += scrollAmount * scrollSpeed;
     }
+
+    const handleMouseDown = (e) => {
+        setIsDragging(true);
+        setStartX(e.pageX - scrollRef.current.offsetLeft);
+        setScrollLeft(scrollRef.current.scrollLeft);
+        e.preventDefault();
+    }
+
+    const handleMouseMove = (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - scrollRef.current.offsetLeft
+        const walk = (x - startX) * 2;
+        scrollRef.current.scrollLeft = scrollLeft - walk;
+    }
+
+    const handleMouseUpOrLeave = () => {
+        setIsDragging(false);
+    }
+
+    const scrollFunction = (direction) => {
+        const scrollAmount = (direction === "left") ? -300 : 300;
+        scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" })
+    }
+
+    // Update Scroll Buttons
+    const updateScrollButtons = useCallback(() => {
+        const container = scrollRef.current;
+
+        if (container) {
+            const leftScroll = container.scrollLeft;
+            const rightScrollable = container.scrollWidth >= leftScroll + container.clientWidth + 20;
+
+            setCanScrollLeft(leftScroll > 5);
+            setCanScrollRight(rightScrollable);
+        }
+    }, []);
 
     useEffect(() => {
         const container = scrollRef.current;
         if (container) {
-            container.addEventListener("scroll", updateScrollButtons);
+            container.addEventListener('scroll', updateScrollButtons);
+            container.addEventListener("wheel", handleWheel, { passive: false });
             updateScrollButtons();
+            return () => container.removeEventListener('scroll', updateScrollButtons);
         }
-    });
+    }, [updateScrollButtons]);
 
 
     return (
-        <section>
+        <section className="py-16 px-4 lg:px-0">
             <div className="container mx-auto text-center mb-10 relative">
                 <h2 className="text-3xl font-bold mb-4">Explore New Arrivals</h2>
                 <p className="text-lg text-gray-600 mb-8">
@@ -132,17 +171,28 @@ const NewArrivals = () => {
 
                 {/* Scroll Buttons */}
                 <div className="absolute right-0 top-0 md:top-13 flex space-x-2">
-                    <button className="p-2 rounded border border-gray-400 bg-white text-black">
-                        <FiChevronLeft className="text-2xl" />
+                    <button className={`p-0.5 rounded border border-gray-400 md:p-2 ${canScrollLeft ? "bg-white text-black" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
+                        onClick={() => scrollFunction("left")}
+                        disabled={!canScrollLeft}
+                    >
+                        <FiChevronLeft className="md:text-2xl text-lg" />
                     </button>
-                    <button className="p-2 rounded border border-gray-400 bg-white text-black">
-                        <FiChevronRight className="text-2xl" />
+                    <button className={`p-0.5 rounded border border-gray-400 md:p-2 ${canScrollRight ? "bg-white text-black" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
+                        onClick={() => scrollFunction("right")}
+                        disabled={!canScrollRight}
+                    >
+                        <FiChevronRight className="md:text-2xl text-lg" />
                     </button>
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="container mx-auto overflow-x-scroll flex space-x-6 relative"
+                <div
                     ref={scrollRef}
+                    className={`container mx-auto overflow-x-scroll flex space-x-6 relative ${isDragging ? "cursor-grabbing select-none" : "cursor-grab"}`}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseUpOrLeave}
+                    onMouseUp={handleMouseUpOrLeave}
                 >
                     {newArrivals.map((product) => (
                         <div key={product._id}
@@ -150,6 +200,7 @@ const NewArrivals = () => {
                             <img src={product.images[0]?.url}
                                 alt={product.images[0]?.altText || product.name}
                                 className="w-full h-[500px] object-cover rounded-xl"
+                                draggable="false"
                             />
                             <div className="absolute bottom-0 left-0 right-0 bg-gray-600/10 backdrop-blur-md text-white p-4 rounded-b-lg">
                                 <Link to={`/product/${product._id}`}
