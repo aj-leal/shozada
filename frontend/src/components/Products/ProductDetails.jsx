@@ -47,7 +47,7 @@ const ProductDetails = () => {
                     </div>
 
                     {/* Mobile Thumbnail */}
-                    <div className="md:hidden flex overscroll-x-contain space-x-4 mb-4">
+                    <div className="md:hidden flex overflow-x-scroll space-x-4 mb-4">
                         {selectedProduct.images.map((image, index) => (
                             <img key={index}
                                 src={image.url}
