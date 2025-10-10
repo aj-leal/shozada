@@ -29,6 +29,11 @@ const ProductDetails = () => {
     const [quantity, setQuantity] = useState(1);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+    const handleQuantityUpdate = (sign) => {
+        if (sign === "plus") setQuantity((prev) => prev + 1);
+        else if (sign === "minus" && quantity > 1) setQuantity((prev) => prev - 1);
+    }
+
     useEffect(() => {
         if (selectedProduct?.images?.length > 0) {
             setMainImage(selectedProduct.images[0].url)
@@ -125,9 +130,17 @@ const ProductDetails = () => {
                         <div className="mb-6">
                             <p className="text-black">Quantity:</p>
                             <div className="flex items-center space-x-4 mt-2">
-                                <button className="px-2 py-1 bg-gray-200 rounded text-lg">-</button>
-                                <span className="text-lg ">1</span>
-                                <button className="px-2 py-1 bg-gray-200 rounded text-lg">+</button>
+                                <button className="px-2 py-1 bg-gray-200 rounded text-lg"
+                                    onClick={() => handleQuantityUpdate("minus")}
+                                >
+                                    -
+                                </button>
+                                <span className="text-lg ">{quantity}</span>
+                                <button className="px-2 py-1 bg-gray-200 rounded text-lg"
+                                    onClick={() => handleQuantityUpdate("plus")}
+                                >
+                                    +
+                                </button>
                             </div>
                         </div>
 
