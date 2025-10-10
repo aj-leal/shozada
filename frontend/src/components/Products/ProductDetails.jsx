@@ -99,7 +99,7 @@ const ProductDetails = () => {
                                 {selectedProduct.colors.map((color) => (
                                     <button key={color}
                                         onClick={() => setSelectedColor(color)}
-                                        className={`w-8 h-8 rounded-full border ${selectedColor === color ? "border-4 border-black" : "border-gray-300"}`}
+                                        className={`w-8 h-8 rounded-full border ${selectedColor === color ? "border-2 border-black scale-125" : "border-gray-300 scale-100"}`}
                                         style={{ backgroundColor: color.toLocaleLowerCase(), filter: "brightness(0.9)", }}
                                     >
                                     </button>
@@ -113,7 +113,7 @@ const ProductDetails = () => {
                             <div className="flex gap-2 mt-2">
                                 {selectedProduct.sizes.map((size) => (
                                     <button key={size}
-                                        className={`px-4 py-2 rounded border ${selectedSize === size ? "border-3 border-black" : "border-gray-400"}`}
+                                        className={`px-4 py-2 rounded border border-gray-400 ${selectedSize === size ? "bg-black text-white" : ""}`}
                                         onClick={() => setSelectedSize(size)}
                                     >
                                         {size}
