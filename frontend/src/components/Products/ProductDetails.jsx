@@ -41,7 +41,7 @@ const ProductDetails = () => {
                             <img key={index}
                                 src={image.url}
                                 alt={image.altText || `Thumbnail ${index}`}
-                                className="w-20 h-20 object-cover rounded-lg cursor-pointer border"
+                                className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${mainImage === image.url ? "scale-110 border-3 border-red-400" : "scale-100 border border-gray-300"}`}
                                 onClick={() => setMainImage(image.url)}
                             />
                         ))}
@@ -59,12 +59,12 @@ const ProductDetails = () => {
                     </div>
 
                     {/* Mobile Thumbnail */}
-                    <div className="md:hidden flex overflow-x-scroll space-x-4 mb-4">
+                    <div className="md:hidden flex overflow-x-hidden space-x-4 mb-4 py-2 px-1">
                         {selectedProduct.images.map((image, index) => (
                             <img key={index}
                                 src={image.url}
                                 alt={image.altText || `Thumbnail ${index}`}
-                                className="w-20 h-20 object-cover rounded-lg cursor-pointer border"
+                                className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${mainImage === image.url ? "scale-110 border-3 border-red-400" : "scale-100 border border-gray-300"}`}
                                 onClick={() => setMainImage(image.url)}
                             />
                         ))}
