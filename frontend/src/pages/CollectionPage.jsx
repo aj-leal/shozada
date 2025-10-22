@@ -25,7 +25,7 @@ const CollectionPage = () => {
 
         // clean event listener
         return () => { document.removeEventListener("mousedown", handleClickOutside) };
-    });
+    }, []);
 
     useEffect(() => {
         setTimeout(() => {
