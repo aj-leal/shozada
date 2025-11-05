@@ -170,7 +170,7 @@ const NewArrivals = () => {
                 </p>
 
                 {/* Scroll Buttons */}
-                <div className="absolute right-0 top-0 md:top-13 flex space-x-2">
+                <div className="absolute right-0 top-0 flex space-x-2">
                     <button className={`p-0.5 rounded border border-gray-400 md:p-2 ${canScrollLeft ? "bg-white text-black" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
                         onClick={() => scrollFunction("left")}
                         disabled={!canScrollLeft}

@@ -3,7 +3,6 @@ import { HiOutlineUser, HiOutlineShoppingBag, HiBars3BottomRight } from "react-i
 import SearchBar from "./SearchBar";
 import CartDrawer from "../Layout/CartDrawer";
 import { useState } from "react";
-import { IoClose } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 
 const Navbar = () => {
