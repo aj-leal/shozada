@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { FaBars } from "react-icons/fa";
 import AdminSidebar from "./AdminSidebar";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -16,7 +16,8 @@ const AdminLayout = () => {
                 <button onClick={toggleSideBar}>
                     <FaBars size={24} />
                 </button>
-                <h1 className="ml-4 text-xl font-medium">Admin Dashboard</h1>
+                {/*<h1 className="ml-4 text-xl font-medium">Admin Dashboard</h1>*/}
+                <Link to="/ctrl" className="ml-4 text-2xl font-medium">Shozada</Link>
             </div>
 
             {/* Mobile SideBar Overlay */}

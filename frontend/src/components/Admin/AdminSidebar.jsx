@@ -11,10 +11,10 @@ const AdminSidebar = ({ toggleSideBar }) => {
 
     return (
         <div className="p-6">
-            <div className="mb-6">
-                <Link to="/ctrl" className="text-2xl font-medium" onClick={toggleSideBar}>Shozada</Link>
+            <div className="mb-8 text-center">
+                <Link to="/ctrl" className="text-2xl font-medium sm:hidden md:inline-flex" onClick={toggleSideBar}>Shozada</Link>
             </div>
-            <h2 className="text-xl font-medium mb-6 text-center sm:hidden md:inline-flex">Admin Dashboard</h2>
+            {/*<h2 className="text-xl font-medium mb-6 text-center sm:hidden md:inline-flex">Admin Dashboard</h2>*/}
 
             <nav className="flex flex-col space-y-2">
                 <NavLink to="/ctrl/users"
