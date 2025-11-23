@@ -21,6 +21,7 @@ const AdminSidebar = ({ toggleSideBar }) => {
                     className={({ isActive }) => isActive ?
                         "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2" :
                         "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"}
+                    onClick={toggleSideBar}
                 >
                     <FaUser />
                     <span>Users</span>
@@ -29,6 +30,7 @@ const AdminSidebar = ({ toggleSideBar }) => {
                     className={({ isActive }) => isActive ?
                         "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2" :
                         "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"}
+                    onClick={toggleSideBar}
                 >
                     <FaBoxOpen />
                     <span>Products</span>
@@ -37,6 +39,7 @@ const AdminSidebar = ({ toggleSideBar }) => {
                     className={({ isActive }) => isActive ?
                         "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2" :
                         "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"}
+                    onClick={toggleSideBar}
                 >
                     <FaClipboardList />
                     <span>Orders</span>
@@ -45,6 +48,7 @@ const AdminSidebar = ({ toggleSideBar }) => {
                     className={({ isActive }) => isActive ?
                         "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2" :
                         "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"}
+                    onClick={toggleSideBar}
                 >
                     <FaStore />
                     <span>Shop</span>
