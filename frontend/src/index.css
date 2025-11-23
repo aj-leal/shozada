@@ -4,6 +4,15 @@
     --color-shozada-red: #ea2e0e;
 }
 
+/* Custom css to change size of of stepper icons on input tag number type */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  transform: scale(1.4);
+}
+input[type="number"] {
+  -moz-appearance: textfield;   /* hides them on firefox*/
+}
+
 #root {
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
