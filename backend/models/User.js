@@ -31,10 +31,11 @@ const userSchema = new mongoose.Schema(
 
 // Password Hash middleware (Here is where password is hashed before sending to DB)
 userSchema.pre("save", async function(next) {
-    if (!this.isModified("password")) return next;
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
+    if (this.isModified("password")) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+    next;
 });
 
 // Check user entered password if within the DB saved hashed password
