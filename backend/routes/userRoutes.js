@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../models/User";
 import jwt from "jsonwebtoken";
+import protectionMiddleware from "../middleware/authMiddleware";
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ router.post("/register", async (req, res) => {
         const payload = { user: { id: user._id, role: user.role } };
 
         //Sign and return the token along with user data
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "2h" }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "24h" }, (err, token) => {
             if (err) throw err;
 
             // Send the user and token in response
@@ -67,7 +68,7 @@ router.post("/login", async (req, res) => {
         const payload = { user: { id: user._id, role: user.role } };
 
         //Sign and return the token along with user data
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "2h" }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "24h" }, (err, token) => {
             if (err) throw err;
 
             // Send the user and token in response
@@ -85,6 +86,14 @@ router.post("/login", async (req, res) => {
         console.error(err);
         res.status(500).send("Server Error");
     }
+});
+
+// @route GET /api/users/profile
+// @desc Get logged-in user's profile (Protected Route)
+// @access Private
+
+router.get("/profile", protectionMiddleware, async (req, res) => {
+    res.json(req.user);
 });
 
 export default router;
