@@ -3,7 +3,7 @@ import User from "../models/User";
 
 //Middleware to protect routes
 
-const protectionMiddleware = async (req, res, next) => {
+export const protectionMiddleware = async (req, res, next) => {
     let token;
 
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
@@ -20,6 +20,14 @@ const protectionMiddleware = async (req, res, next) => {
     } else {
         res.status(401).json({ message: "You are not authorized" });
     }
+};
+
+// Middleware to check if user is admin (for creatign a product)
+
+
+export const admin = (req, res, next) => {
+    if (req.user && req.user.role === "admin") next();
+    else res.status(403).json({ message: "Not authorized to create a product." });
 };
 
 export default protectionMiddleware;
