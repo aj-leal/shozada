@@ -98,6 +98,7 @@ router.put("/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
 
         if (product) {
             // Update product fields
+            // product.name is from DB, name is from the request body/ user input
             product.name = name || product.name;
             product.description = description || product.description;
             product.price = price || product.price;
@@ -128,6 +129,28 @@ router.put("/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send("Server error.")
+    }
+});
+
+// @route DELETE /api/products/:id
+// @desc Delete a product from DB using its ID
+// @access Private/Admin
+
+router.delete("/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        // Find the products in DB using id
+        const product = await Product.findById(req.params.id);
+
+        if (product) {// If product exist in DB
+            //Remove product from DB
+            await product.deleteOne();
+            res.json({ message: "Product removed" });
+        } else {
+            res.status(404).json({ message: "Product not found." });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error");
     }
 });
 
