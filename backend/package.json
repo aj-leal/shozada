@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "bun server.js",
-    "dev": "bun --watch server.js --host 0.0.0.0"
+    "dev": "bun --watch server.js --host 0.0.0.0",
+    "seed": "bun seeder.js"
   },
   "keywords": [],
   "author": "dev.l_ian",
