@@ -233,4 +233,22 @@ router.get("/", async (req, res) => {
     }
 });
 
+// @route GET /api/products/:id
+// @desc Get product details of a specific product
+// @access Public
+
+router.get("/:id", async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (product) {
+            res.json(product);
+        } else {
+            res.status(404).json({ message: "Product not found." });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Serve error.");
+    }
+});
+
 export default router;
