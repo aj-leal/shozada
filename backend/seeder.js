@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Product from "./models/Product";
 import User from "./models/User";
+import Cart from "./models/Cart";
 import products from "./data/products";
 
 // Connect to mongoDB
@@ -12,6 +13,7 @@ const seedData = async () => {
         // Clear existing data
         await Product.deleteMany();
         await User.deleteMany();
+        await Cart.deleteMany();
 
         // Create a default admin user account
         const createAdmin = await User.create({
