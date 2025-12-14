@@ -251,6 +251,21 @@ router.get("/best-seller", async (req, res) => {
     }
 });
 
+// @route GET /api/products/new-arrivals
+// @desc Retrieve latest 8 products - Creation date
+// @access Public
+
+router.get("/new-arrivals", async (req, res) => {
+    try {
+        // Fetch 8 latest products
+        const newArrivals = await Product.find().sort({ createdAt: -1 }).limit(8);
+        res.json(newArrivals);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error.");
+    }
+});
+
 // @route GET /api/products/:id
 // @desc Get product details of a specific product
 // @access Public
