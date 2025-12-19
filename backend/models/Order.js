@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const checkoutItemSchema = new mongoose.Schema({
+const orderItemSchema = new mongoose.Schema({
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
@@ -18,17 +18,23 @@ const checkoutItemSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    size: String,
+    color: String,
+    quantity: {
+        type: Number,
+        required: true,
+    },
 }, { _id: false });
 
-const checkoutSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
-    checkoutItems: [checkoutItemSchema],
+    orderItems: [orderItemSchema],
     shippingAddress: {
-        addres: { type: String, required: true },
+        address: { type: String, required: true },
         city: { type: String, required: true },
         postalCode: { type: String, required: true },
         country: { type: String, required: true },
@@ -45,13 +51,23 @@ const checkoutSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    paidAt: { type: Date, },
-    paymentStatus: { type: String, default: "pending" },
-    paymentDetails: {
-        type: mongoose.Schema.Types.Mixed, // store payment-related details(transactionId, paypal response)
+    paidAt: {
+        type: Date,
     },
-    isFinalized: { type: Boolean, default: false },
-    finalizedAt: { type: Date },
+    isDelivered: {
+        type: Boolean,
+        default: false,
+    },
+    deliveredAt: { type: Date },
+    paymentStatus: {
+        type: String,
+        default: "pending",
+    },
+    status: {
+        type: String,
+        enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
+        default: "Processing",
+    }
 }, { timestamps: true });
 
-export default mongoose.model("Checkout", checkoutSchema);
+export default mongoose.model("Order", orderSchema);
