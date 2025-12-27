@@ -37,5 +37,33 @@ router.post("/", protectionMiddleware, async (req, res) => {
     }
 });
 
+// @route PUT /api/checkout/:id/pay
+// @desc Update checkout to mark as paid after successful payment
+// @access Private
+
+router.put("/:id/pay", protectionMiddleware, async (req, res) => {
+    const { paymentStatus, paymentDetails } = req.body;
+
+    try {
+        const checkout = await Checkout.findById(req.params.id);
+
+        if (!checkout) { return res.status(404).json({ message: "Checkout basket not found." }); }
+
+        if (paymentStatus === "paid") {
+            checkout.isPaid = true;
+            checkout.paymentStatus = paymentStatus;
+            checkout.paymentDetails = paymentDetails; a
+            checkout.paidAt = Date.now();
+            await checkout.save();
+
+            return res.status(200).json(checkout);
+        } else {
+            return res.status(400).json({ message: "Payment unsuccessful." });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Server error." });
+    }
+});
 
 export default router;
