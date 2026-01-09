@@ -12,7 +12,7 @@ const router = express.Router();
 // @access Private
 
 router.post("/", protectionMiddleware, async (req, res) => {
-    const { checkoutItems, shippingAddress, paymentMethod, totalPrice } = req.body;
+    const { checkoutItems, shippingAddress, paymentMethod, quantity, totalPrice } = req.body;
 
     if (!checkoutItems || checkoutItems.length === 0) {
         return res.status(400).json({ message: "No items in checkout basket." });
@@ -25,11 +25,12 @@ router.post("/", protectionMiddleware, async (req, res) => {
             checkoutItems: checkoutItems,
             shippingAddress,
             paymentMethod,
+            quantity,
             totalPrice,
             paymentStatus: "pending",
             isPaid: false,
         });
-        console.log(`Checkout created for user: ${req.user._id}`);
+        //console.log(`Checkout created for user: ${req.user._id}`);
         res.status(201).json(newCheckout);
     } catch (err) {
         console.error("Error creating checkout session: ", err);
@@ -85,6 +86,7 @@ router.post("/:id/finalize", protectionMiddleware, async (req, res) => {
                 orderItems: checkout.checkoutItems,
                 shippingAddress: checkout.shippingAddress,
                 paymentMethod: checkout.paymentMethod,
+                quantity: checkout.quantity,
                 totalPrice: checkout.totalPrice,
                 isPaid: true,
                 paidAt: checkout.paidAt,
