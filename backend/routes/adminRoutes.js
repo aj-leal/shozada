@@ -46,4 +46,26 @@ router.post("/users", protectionMiddleware, adminMiddleware, async (req, res) =>
     }
 });
 
+// @route PUT /api/admin/users/:id
+// @desc Update user info (Admin access only) - Name, email, role
+// @access Private/Admin
+
+router.put("/users/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (user) {
+            user.name = req.body.name || user.name;
+            user.email = req.body.email || user.email;
+            user.role = req.body.role || user.role;
+        }
+
+        const updatedUser = await user.save();
+        res.json({ message: "User info updated successfully.", user: updatedUser });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error." });
+    }
+});
+
 export default router;
