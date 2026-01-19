@@ -7,7 +7,7 @@ import cartRoutes from "./routes/cartRoutes.js";
 import checkoutRoutes from "./routes/checkoutRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
-import subscriberRoutes from "./routes/subscriberRoutes.js";
+import subscribeRoute from "./routes/subscribeRoute.js";
 
 const app = express();
 app.use(express.json());
@@ -31,7 +31,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
-app.use("/api/subscribe", subscriberRoutes);
+app.use("/api/subscribe", subscribeRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
