@@ -53,11 +53,21 @@ router.post("/users", protectionMiddleware, adminMiddleware, async (req, res) =>
 router.put("/users/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
 
-        if (user) {
-            user.name = req.body.name || user.name;
-            user.email = req.body.email || user.email;
-            user.role = req.body.role || user.role;
+        let hasChanged = false;// flag for checking if info is edited
+
+        ["name", "email", "role"].forEach(key => {
+            if (req.body[key] !== undefined && req.body[key] !== user[key]) {
+                user[key] = req.body[key];
+                hasChanged = true;
+            }
+        });
+
+        if (!hasChanged) {
+            return res.json({ user });
         }
 
         const updatedUser = await user.save();
