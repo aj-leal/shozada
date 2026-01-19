@@ -78,4 +78,24 @@ router.put("/users/:id", protectionMiddleware, adminMiddleware, async (req, res)
     }
 });
 
+// @route DELETE /api/admin/users/:id
+// @desc Delete a user (Admin Only)
+// @access Private/Admin
+
+router.delete("/users/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+
+        if (user) {
+            res.status(200).json({ message: "User removed from record." });
+        } else {
+            res.status(404).jsonp({ message: "User does not exist. " });
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error." });
+    }
+});
+
 export default router;
