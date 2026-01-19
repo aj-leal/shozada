@@ -13,13 +13,6 @@ router.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
     try {
         //registration logic here =======
-        /*res.status(200).send({ // test if data is being passed correctly
-            status: 200,
-            message: "Success",
-            data: {
-                name, email, password,
-            },
-        });*/
         let user = await User.findOne({ email });
 
         if (user) return res.status(400).json({ message: "User already exists" });
@@ -59,13 +52,6 @@ router.post("/adminCreate", async (req, res) => {
     const { name, email, password, role } = req.body;
     try {
         //registration logic here =======
-        /*res.status(200).send({ // test if data is being passed correctly
-            status: 200,
-            message: "Success",
-            data: {
-                name, email, password,
-            },
-        });*/
         let user = await User.findOne({ email });
 
         if (user) return res.status(400).json({ message: "User already exists" });

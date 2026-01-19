@@ -18,4 +18,32 @@ router.get("/users", protectionMiddleware, adminMiddleware, async (req, res) => 
     }
 });
 
+// @route POST /api/admin/users
+// @desc Add a new user (Admin only)
+// @access Private/Admin
+
+router.post("/users", protectionMiddleware, adminMiddleware, async (req, res) => {
+    const { name, email, password, role } = req.body;
+
+    try {
+        let user = await User.findOne({ email });
+
+        if (user) { return res.status(400).json({ message: "User already exists." }); }
+
+        user = new User({
+            name,
+            email,
+            password,
+            role: role || "customer",
+        });
+
+        await user.save();
+
+        res.status(201).json({ message: "User created successfully.", user });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error." });
+    }
+});
+
 export default router;
