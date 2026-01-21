@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../models/User.js";
 import Product from "../models/Product.js";
+import Order from "../models/Order.js";
 import { protectionMiddleware, adminMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -100,6 +101,8 @@ router.delete("/users/:id", protectionMiddleware, adminMiddleware, async (req, r
 });
 
 
+//=================== ADMIN PRODUCT ROUTES =========================
+
 // @route DELETE /api/admin/products
 // @desc Get all products (Admin access only)
 // @access Private/Admin
@@ -109,6 +112,26 @@ router.get("/products", protectionMiddleware, adminMiddleware, async (req, res) 
         const products = await Product.find({});
 
         res.json(products);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error. " });
+    }
+});
+
+
+
+//=================== ADMIN ORDER ROUTES =========================
+
+
+// @route GET /api/admin/orders
+// @desc Get all orders (Admin access only)
+// @access Private/Admin
+
+router.get("/orders", protectionMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const orders = await Order.find({}).populate("user", "name email");
+
+        res.json(orders);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error. " });
