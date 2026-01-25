@@ -138,4 +138,27 @@ router.get("/orders", protectionMiddleware, adminMiddleware, async (req, res) =>
     }
 });
 
+// @route PUT /api/admin/orders/:id
+// @desc Update order status (Admin access only)
+// @access Private/Admin
+
+router.put("/orders/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (order) {//if order exist
+            order.status = req.body.status || order.status;
+            order.isDelivered = (req.body.status === "Delivered") || order.isDelivered;
+            order.deliveredAt = req.body.status === "Delivered" ? Date.now() : order.deliveredAt;
+
+            const updatedOrder = await order.save();
+            res.json(updatedOrder);
+        } else {
+            res.status(404).json({ message: "Order not found." });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error. " });
+    }
+});
+
 export default router;
