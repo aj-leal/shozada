@@ -2,15 +2,18 @@ import { useState } from "react"
 import { Link } from "react-router-dom";
 import loginImg from "../assets/login.webp";
 import { IoEye, IoEyeOff } from "react-icons/io5";
+import { loginUser } from "../redux/slices/authSlice.js";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("User: ", { email, password });
+        dispatch(loginUser({ email, password }));
     }
 
     return (
