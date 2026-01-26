@@ -161,4 +161,23 @@ router.put("/orders/:id", protectionMiddleware, adminMiddleware, async (req, res
     }
 });
 
+// @route DELETE /api/admin/orders/:id
+// @desc Delete an order(Admin access only)
+// @access Private/Admin
+
+router.delete("/orders/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (order) {
+            await order.deleteOne();
+            res.json({ message: "Order successfully deleted." });
+        }
+        res.status(404).json({ message: "Order not found." });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error. " });
+    }
+});
+
 export default router;
