@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi"
 import { Link } from "react-router-dom"
@@ -9,96 +10,7 @@ const NewArrivals = () => {
     const [scrollLeft, setScrollLeft] = useState(0);
     const [canScrollRight, setCanScrollRight] = useState(true);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
-    const newArrivals = [
-        {
-            _id: "1",
-            name: "Stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url: "https://picsum.photos/500/500?random=1",
-                    altText: "Stylish Jacket",
-                },
-            ],
-        },
-        {
-            _id: "2",
-            name: "Tapered Jeans",
-            price: 130,
-            images: [
-                {
-                    url: "https://picsum.photos/500/500?random=2",
-                    altText: "Tapered Jeans",
-                },
-            ],
-        },
-        {
-            _id: "3",
-            name: "Sweatshirt",
-            price: 90,
-            images: [
-                {
-                    url: "https://picsum.photos/500/500?random=3",
-                    altText: "Sweatshirt",
-                },
-            ],
-        },
-        {
-            _id: "4",
-            name: "Cargo Shorts",
-            price: 77,
-            images: [
-                {
-                    url: "https://picsum.photos/500/500?random=4",
-                    altText: "Cargo Shorts",
-                },
-            ],
-        },
-        {
-            _id: "5",
-            name: "White Shirt",
-            price: 20,
-            images: [
-                {
-                    url: "https://picsum.photos/500/500?random=5",
-                    altText: "White Shirt",
-                },
-            ],
-        },
-        {
-            _id: "6",
-            name: "Fancy Coat",
-            price: 200,
-            images: [
-                {
-                    url: "https://picsum.photos/500/500?random=6",
-                    altText: "Fancy Coat",
-                },
-            ],
-        },
-        {
-            _id: "7",
-            name: "Cardigan",
-            price: 45,
-            images: [
-                {
-                    url: "https://picsum.photos/500/500?random=7",
-                    altText: "Cardifgan",
-                },
-            ],
-        },
-        {
-            _id: "8",
-            name: "Skimpy Skirt",
-            price: 39,
-            images: [
-                {
-                    url: "https://picsum.photos/500/500?random=8",
-                    altText: "Skimpy Skirt",
-                },
-            ],
-        },
-    ]
+    const [newArrivals, setNewArrivals] = useState([]);
 
     const handleWheel = (e) => {
         e.preventDefault();
@@ -144,6 +56,19 @@ const NewArrivals = () => {
             setCanScrollLeft(leftScroll > 5);
             setCanScrollRight(rightScrollable);
         }
+    }, []);
+
+    useEffect(() => {
+        const fetchNewArrivals = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`);
+                setNewArrivals(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchNewArrivals();
     }, []);
 
     useEffect(() => {
