@@ -1,6 +1,5 @@
-import { useEffect } from "react";
-import { useState } from "react";
-import { /*useNavigate,*/ useSearchParams } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { /*useNavigate,*/ useSearchParams } from "react-router-dom";
 
 const FilterSidebar = () => {
     const [searchParams, setSearchParams] = useSearchParams();
