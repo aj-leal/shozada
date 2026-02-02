@@ -1,10 +1,10 @@
 {
-  "name": "Shozada Frontend",
+  "name": "frontend-test",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bunx --bun vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -12,25 +12,25 @@
   "dependencies": {
     "@paypal/react-paypal-js": "^8.9.2",
     "@reduxjs/toolkit": "^2.11.2",
-    "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.13.4",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.0",
-    "sonner": "^2.0.7",
-    "tailwindcss": "^4.1.18"
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
-    "@types/react": "^19.2.10",
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^4.7.0",
-    "eslint": "^9.39.2",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.26",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
-    "vite": "^7.3.1"
+    "tailwindcss": "^4.1.18",
+    "vite": "^7.2.4"
   }
 }
