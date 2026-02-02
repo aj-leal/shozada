@@ -1,7 +1,4 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { useCallback } from "react";
-import { useRef } from "react"
+import { useState, useEffect, useCallback, useRef } from "react";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi"
 import { Link } from "react-router-dom"
 
