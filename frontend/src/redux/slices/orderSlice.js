@@ -1,7 +1,5 @@
-import { act } from "react";
-
-const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
-const { default: axios } = require("axios");
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Async Thunk to fetch user orders
 export const fetchUserOrders = createAsyncThunk("orders/fetchUserOrders",

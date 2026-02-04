@@ -1,7 +1,5 @@
-import { build } from "vite";
-
-const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
-const { default: axios } = require("axios");
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Async Thunk to create a checkout session
 export const createCheckout = createAsyncThunk("checkout/createCheckout",
