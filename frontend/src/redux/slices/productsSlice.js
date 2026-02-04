@@ -41,7 +41,7 @@ export const fetchProductsByFilters = createAsyncThunk("products/fetchByFilters"
 
 export const fetchProductDetails = createAsyncThunk("products/fetchProductDetails",
     async (id) => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/prodcts/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`);
         return response.data;
     }
 );
@@ -149,7 +149,7 @@ const productsSlice = createSlice({
             state.error = null;
         }).addCase(fetchSimilarProducts.fulfilled, (state, action) => {
             state.loading = false;
-            state.products = action.payload;
+            state.similarProducts = action.payload;
         }).addCase(fetchSimilarProducts.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
