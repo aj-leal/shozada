@@ -159,7 +159,7 @@ const FilterSidebar = () => {
                         <label className="text-gray-700" htmlFor={size} >{size}</label>
                     </div>
                 ))}
-            </div>
+            </div>products
 
             {/* materials filter */}
             <div className="mb-6">
@@ -212,9 +212,9 @@ const FilterSidebar = () => {
                     max={100}
                     value={priceRange[1]}
                     onChange={handlePriceChange}
-                    className="w-full h-2 accent-red-600 bg-gray-700 rounded-lg appearance-auto cursor-pointer"
+                    className="w-38 h-2 accent-red-600 bg-gray-700 rounded-lg cursor-pointer"
                 />
-                <div className="flex justify-between text-gray-600 mt-2">
+                <div className="w-38 flex justify-between text-gray-600 mt-2">
                     <span>$0</span>
                     <span>${priceRange[1]}</span>
                 </div>
