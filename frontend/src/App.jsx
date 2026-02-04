@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import UserLayout from "./components/Layout/UserLayout"
 import Home from "./pages/Home";
 import { Toaster } from "sonner";
@@ -34,6 +34,7 @@ function App() {
                         <Route path="login" element={<Login />} />
                         <Route path="register" element={<Register />} />
                         <Route path="profile" element={<Profile />} />
+                        <Route path="collections" element={<Navigate to="/collections/all" replace />} />
                         <Route path="collections/:collection" element={<CollectionPage />} />
                         <Route path="product/:id" element={<ProductDetails />} />
                         <Route path="checkout" element={<Checkout />} />
