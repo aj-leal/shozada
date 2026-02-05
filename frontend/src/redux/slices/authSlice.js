@@ -1,10 +1,33 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 // Retrieve user info and token from localStorage if available
-const userFromStorage = localStorage.getItem("userInfo")
+/*const userFromStorage = localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
+*/
+const checkAndClearExpiredToken = () => {
+    const userInfo = localStorage.getItem("userInfo");
+    if (!userInfo) return null;
+    const token = localStorage.getItem("userToken");
+    try {
+        const decoded = jwtDecode(token);
+        if (decoded.exp * 1000 < Date.now()) {
+            localStorage.removeItem("userInfo");
+            localStorage.removeItem("userToken");
+            localStorage.setItem("guestId", `guest_${new Date.getTime()}`);
+            return null;
+        }
+        return JSON.parse(userInfo);
+    } catch (error) {
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("userToken");
+        localStorage.setItem("guestId", `guest_${new Date.getTime()}`);
+        return null;
+    }
+}
+
 
 // Check for an existing guest ID in the localStorage or generate a new One
 const initialGuestId = localStorage.getItem("guestId") || `guest_${new Date().getTime()}`;
@@ -12,7 +35,7 @@ localStorage.setItem("guestId", initialGuestId);
 
 // Initial state
 const initialState = {
-    user: userFromStorage,
+    user: checkAndClearExpiredToken(),//userFromStorage,
     guestId: initialGuestId,
     loading: false,
     error: null
