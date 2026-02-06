@@ -16,27 +16,33 @@ const checkAndClearExpiredToken = () => {
         if (decoded.exp * 1000 < Date.now()) {
             localStorage.removeItem("userInfo");
             localStorage.removeItem("userToken");
-            localStorage.setItem("guestId", `guest_${new Date.getTime()}`);
+            localStorage.setItem("guestId", `guest_${new Date().getTime()}`);
             return null;
         }
         return JSON.parse(userInfo);
     } catch (error) {
         localStorage.removeItem("userInfo");
         localStorage.removeItem("userToken");
-        localStorage.setItem("guestId", `guest_${new Date.getTime()}`);
+        localStorage.setItem("guestId", `guest_${new Date().getTime()}`);
         return null;
     }
 }
 
 
 // Check for an existing guest ID in the localStorage or generate a new One
-const initialGuestId = localStorage.getItem("guestId") || `guest_${new Date().getTime()}`;
-localStorage.setItem("guestId", initialGuestId);
-
+const getGuestId = () => {
+    if (localStorage.getItem("userInfo")) return null;
+    if (!localStorage.getItem("guestId")) {
+        const newGuestId = `guest_${new Date().getTime()}`;
+        localStorage.setItem("guestId", newGuestId);
+        return `guest_${new Date().getTime()}`;
+    }
+    return localStorage.getItem("guestId");
+}
 // Initial state
 const initialState = {
     user: checkAndClearExpiredToken(),//userFromStorage,
-    guestId: initialGuestId,
+    guestId: getGuestId(),
     loading: false,
     error: null
 };
@@ -47,6 +53,7 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { r
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/login`, userData);
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
         localStorage.setItem("userToken", response.data.token);
+        localStorage.removeItem("guestId");
 
         return response.data.user; // Return the user data from the response
     } catch (err) {
@@ -60,6 +67,7 @@ export const registerUser = createAsyncThunk("auth/registerUser", async (userDat
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/register`, userData);
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
         localStorage.setItem("userToken", response.data.token);
+        localStorage.removeItem("guestId");
 
         return response.data.user; // Return the user data from the response
     } catch (err) {
@@ -91,19 +99,21 @@ const authSlice = createSlice({
             state.error = null;
         }).addCase(loginUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.error = action.payload;
+            state.user = action.payload;
+            state.guestId = null;
         }).addCase(loginUser.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload.message;
+            state.error = action.payload?.message || "Login failed.";
         }).addCase(registerUser.pending, (state) => {
             state.loading = true;
             state.error = null;
         }).addCase(registerUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.error = action.payload;
+            state.user = action.payload;
+            state.guestId = null;
         }).addCase(registerUser.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload.message;
+            state.error = action.payload?.message || "Registration failed.";
         })
     },
 });
