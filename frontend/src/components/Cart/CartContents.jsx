@@ -1,6 +1,7 @@
 import { RiDeleteBin3Line } from "react-icons/ri"
 import { useDispatch } from "react-redux"
-import { removeFromCart, updateCartItemQuantity } from "../../redux/slices/cartSlice";
+import { removeFromCart, syncCart, updateCartItemQuantity } from "../../redux/slices/cartSlice";
+import { useEffect } from "react";
 
 const CartContents = ({ cart, userId, guestId }) => {
     const dispatch = useDispatch();
@@ -8,7 +9,8 @@ const CartContents = ({ cart, userId, guestId }) => {
     // Handle adding or removing from cart
     const handleAddToCart = (productId, delta, quantity, size, color) => {
         const newQuantity = quantity + delta;
-        if (quantity >= 1) {
+        console.log("newQuantity is", newQuantity);
+        if (newQuantity >= 1) {
             dispatch(updateCartItemQuantity({
                 productId,
                 quantity: newQuantity,
@@ -17,6 +19,14 @@ const CartContents = ({ cart, userId, guestId }) => {
                 size,
                 color,
             }));
+        } else {
+            dispatch(removeFromCart({
+                productId,
+                guestId,
+                userId,
+                size,
+                color,
+            }))
         }
     };
 
@@ -29,6 +39,10 @@ const CartContents = ({ cart, userId, guestId }) => {
             color,
         }));
     };
+
+    useEffect(() => {
+        dispatch(syncCart({ userId, guestId }));
+    }, [dispatch, userId, guestId]);
 
     return (
         <div>
@@ -50,7 +64,7 @@ const CartContents = ({ cart, userId, guestId }) => {
                                     size: {product.size} | color: {product.color}
                                 </p>
                                 <div className="flex items-center mt-2">
-                                    <button className="border rounded px-2 py-1 text-xl font-medium"
+                                    <button className="border rounded px-2 py-1 text-xl font-medium disabled:text-gray-300"
                                         onClick={() =>
                                             handleAddToCart(
                                                 product.productId,
@@ -60,6 +74,8 @@ const CartContents = ({ cart, userId, guestId }) => {
                                                 product.color,
                                             )
                                         }
+                                        disabled={product.quantity === 1}
+
                                     >-
                                     </button>
                                     <span className="mx-4">{product.quantity}</span>
