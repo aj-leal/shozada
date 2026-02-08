@@ -9,7 +9,6 @@ const CartContents = ({ cart, userId, guestId }) => {
     // Handle adding or removing from cart
     const handleAddToCart = (productId, delta, quantity, size, color) => {
         const newQuantity = quantity + delta;
-        console.log("newQuantity is", newQuantity);
         if (quantity >= 1) {
             dispatch(updateCartItemQuantity({
                 productId,
