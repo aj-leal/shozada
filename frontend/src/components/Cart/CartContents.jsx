@@ -10,7 +10,7 @@ const CartContents = ({ cart, userId, guestId }) => {
     const handleAddToCart = (productId, delta, quantity, size, color) => {
         const newQuantity = quantity + delta;
         console.log("newQuantity is", newQuantity);
-        if (newQuantity >= 1) {
+        if (quantity >= 1) {
             dispatch(updateCartItemQuantity({
                 productId,
                 quantity: newQuantity,
@@ -19,14 +19,6 @@ const CartContents = ({ cart, userId, guestId }) => {
                 size,
                 color,
             }));
-        } else {
-            dispatch(removeFromCart({
-                productId,
-                guestId,
-                userId,
-                size,
-                color,
-            }))
         }
     };
 
@@ -47,6 +39,7 @@ const CartContents = ({ cart, userId, guestId }) => {
     return (
         <div>
             {
+                cart.products.length > 0 &&
                 cart.products.map((product, index) => (
                     <div
                         key={index}
@@ -64,7 +57,7 @@ const CartContents = ({ cart, userId, guestId }) => {
                                     size: {product.size} | color: {product.color}
                                 </p>
                                 <div className="flex items-center mt-2">
-                                    <button className="border rounded px-2 py-1 text-xl font-medium disabled:text-gray-300"
+                                    <button className="border rounded px-2 py-1 text-xl font-medium"
                                         onClick={() =>
                                             handleAddToCart(
                                                 product.productId,
@@ -74,8 +67,6 @@ const CartContents = ({ cart, userId, guestId }) => {
                                                 product.color,
                                             )
                                         }
-                                        disabled={product.quantity === 1}
-
                                     >-
                                     </button>
                                     <span className="mx-4">{product.quantity}</span>
