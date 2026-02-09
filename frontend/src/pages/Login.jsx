@@ -10,6 +10,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [hasMerged, setHasMerged] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -21,7 +22,7 @@ const Login = () => {
     const isCheckoutRedirect = redirect.includes("checkout");
 
     useEffect(() => {
-        if (user) {
+        /*if (user) {
             if (cart?.products.length > 0 && guestId) {// if cart is not empty
                 dispatch(mergeCart({ guestId, user })).then(() => {
                     navigate(isCheckoutRedirect ? "/checkout" : "/");
@@ -29,8 +30,24 @@ const Login = () => {
             } else {
                 navigate(isCheckoutRedirect ? "/checkout" : "/");
             }
-        }
-    }, [user, guestId, cart, navigate, isCheckoutRedirect, dispatch]);
+        }*/
+        if (!user || hasMerged) return;
+        const handlePostLogin = async () => {
+            try {
+                if (guestId) {
+                    await dispatch(mergeCart({ guestId })).unwrap();
+                    localStorage.removeItem("guestId");
+                }
+
+                setHasMerged(true);
+                navigate(isCheckoutRedirect ? "/checkout" : "/");
+            } catch (error) {
+                console.error("Cart merge failed: ", error);
+            }
+        };
+
+        handlePostLogin();
+    }, [user, guestId, hasMerged, navigate, isCheckoutRedirect, dispatch]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
