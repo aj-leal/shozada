@@ -172,8 +172,71 @@ router.get("/", async (req, res) => {
 
 router.post("/merge", protectionMiddleware, async (req, res) => {
     const { guestId } = req.body;
+    const idUser = req.user._id;
 
-    try {
+    console.log("[MERGE API] ", { idUser, guestId });
+
+    const guestCart = await Cart.findOne({ guestId });
+    if (!guestCart) {
+        console.log("[MERGE API] Guest cart not found.");
+        //return res.status(404).json({message: "Guest cart not found."});
+    }
+    const userCart = await Cart.findOne({ user: idUser });
+    if (!userCart) {
+        console.log("[MERGE API] User cart not found.");
+    }
+
+    if (guestCart) {
+        if (guestCart.products.length === 0) {
+            return res.status(400).json({ message: "Guest cart is empty." });
+        }
+
+        if (userCart) {
+            // Merge guest cart into user cart
+            guestCart.products.forEach((guestItem) => {
+                // Get the index from userCart of every product in the guestCart
+                const productIndex = userCart.products.findIndex((item) =>
+                    item.productId.toString() === guestItem.productId.toString() &&
+                    item.size === guestItem.size &&
+                    item.color === guestItem.color
+                );
+
+                if (productIndex > -1) {
+                    // If the item exists in the user cart, update the quantity
+                    userCart.products[productIndex].quantity += guestItem.quantity;
+                } else {
+                    // Otherwise, just add the item to the cart
+                    userCart.products.push(guestItem);
+                }
+            });
+
+            userCart.totalPrice = userCart.products.reduce((acc, item) => acc + item.price * item.quantity, 0);
+            await userCart.save();
+            console.log("[MERGE API] Guest cart successfully merged to user cart.");
+
+            // Remove the guest cart after merging
+            try {
+                await Cart.findOneAndDelete({ guestId });
+            } catch (err) {
+                console.error("Error deleting guest cart", err);
+            }
+            res.status(200).json(userCart);
+        } else {
+            // If the user has no existing cart, assign the guest cart to the user
+            guestCart.user = req.user._id;
+            guestCart.guestId = undefined;
+            console.log(`[MERGE API] Changing cart ownership from ${guestCart.guestId} to ${guestCart.user}.`);
+            await guestCart.save();
+
+            res.status(200).json(guestCart);
+        }
+    } else {
+        // guest cart non existent but user cart exist, return the user cart
+        if (userCart) return res.status(200).json(userCart);
+        return res.status(404).json({ message: "Guest cart not found." });
+    }
+
+    /*try {
         //Find the guest cart
         const guestCart = await Cart.findOne({ guestId });
         const userCart = await Cart.findOne({ user: req.user._id });
@@ -231,6 +294,6 @@ router.post("/merge", protectionMiddleware, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error." });
-    }
+    }*/
 });
 export default router;
