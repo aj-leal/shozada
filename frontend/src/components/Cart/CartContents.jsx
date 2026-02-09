@@ -32,8 +32,9 @@ const CartContents = ({ cart, userId, guestId }) => {
     };
 
     useEffect(() => {
+        if (!userId && !guestId) return;
         dispatch(syncCart({ userId, guestId }));
-    }, [dispatch, userId, guestId]);
+    }, []);
 
     return (
         <div>
