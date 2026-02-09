@@ -35,7 +35,7 @@ const getGuestId = () => {
     if (!localStorage.getItem("guestId")) {
         const newGuestId = `guest_${new Date().getTime()}`;
         localStorage.setItem("guestId", newGuestId);
-        return `guest_${new Date().getTime()}`;
+        return newGuestId;
     }
     return localStorage.getItem("guestId");
 }
@@ -53,7 +53,6 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { r
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/login`, userData);
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
         localStorage.setItem("userToken", response.data.token);
-        localStorage.removeItem("guestId");
 
         return response.data.user; // Return the user data from the response
     } catch (err) {
@@ -67,7 +66,6 @@ export const registerUser = createAsyncThunk("auth/registerUser", async (userDat
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/register`, userData);
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
         localStorage.setItem("userToken", response.data.token);
-        localStorage.removeItem("guestId");
 
         return response.data.user; // Return the user data from the response
     } catch (err) {
@@ -100,7 +98,7 @@ const authSlice = createSlice({
         }).addCase(loginUser.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload;
-            state.guestId = null;
+            //state.guestId = null;
         }).addCase(loginUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload?.message || "Login failed.";
@@ -110,7 +108,7 @@ const authSlice = createSlice({
         }).addCase(registerUser.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload;
-            state.guestId = null;
+            //state.guestId = null;
         }).addCase(registerUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload?.message || "Registration failed.";
