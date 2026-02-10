@@ -35,7 +35,9 @@ const Login = () => {
         const handlePostLogin = async () => {
             try {
                 if (guestId) {
-                    await dispatch(mergeCart({ guestId })).unwrap();
+                    if (localStorage.getItem("cart")) {
+                        await dispatch(mergeCart({ guestId })).unwrap();
+                    }
                     localStorage.removeItem("guestId");
                 }
 
