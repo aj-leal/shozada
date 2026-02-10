@@ -111,7 +111,7 @@ const authSlice = createSlice({
             //state.guestId = null;
         }).addCase(registerUser.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload?.message || "Registration failed.";
+            state.error = action.payload?.message || "failed.";
         })
     },
 });
