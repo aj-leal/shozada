@@ -15,22 +15,12 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, guestId } = useSelector((state) => state.auth);
-    const { cart } = useSelector((state) => state.cart);
 
     // Get redirect parameter and check if it's checkout or something else
     const redirect = new URLSearchParams(location.search).get("redirect") || "/";
     const isCheckoutRedirect = redirect.includes("checkout");
 
     useEffect(() => {
-        /*if (user) {
-            if (cart?.products.length > 0 && guestId) {// if cart is not empty
-                dispatch(mergeCart({ guestId, user })).then(() => {
-                    navigate(isCheckoutRedirect ? "/checkout" : "/");
-                });
-            } else {
-                navigate(isCheckoutRedirect ? "/checkout" : "/");
-            }
-        }*/
         if (!user || hasMerged) return;
         const handlePostLogin = async () => {
             try {
@@ -66,7 +56,7 @@ const Login = () => {
                         <h2 className="text-xl font-medium">Shozada</h2>
                     </div>
                     <h2 className="text-2xl font-bold text-center mb-6">Hey there! 👋 </h2>
-                    <p className="text-center mb-6">Enter your username and password to Login.</p>
+                    <p className="text-center mb-6">Enter your email and password to Login.</p>
                     <div className="mb-4">
                         <label className="block text-sm font-semibold mb-2">Email</label>
                         <input type="email"
@@ -74,6 +64,7 @@ const Login = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full p-2 border rounded"
                             placeholder="Enter your email address"
+                            required
                         />
                     </div>
                     <div className="mb-4">
@@ -84,6 +75,7 @@ const Login = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full p-2 pr-10 border rounded"
                                 placeholder="Enter your password"
+                                required
                             />
                             {/* Password visibility toggle */}
                             <button type="button"
