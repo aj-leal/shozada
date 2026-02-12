@@ -1,56 +1,29 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { fetchOrderDetails } from "../redux/slices/orderSlice";
 
 const OrderDetailsPage = () => {
     const { id } = useParams();
-    const [orderDetails, setOrderDetails] = useState(null);
+    const dispatch = useDispatch();
+    const { orderDetails, loading, error } = useSelector((state) => state.orders);
+
+    useEffect(() => {
+        dispatch(fetchOrderDetails(id));
+    }, [dispatch, id]);
 
     //acc stands for "accumulator" which stores subtotal every item
     let subtotal = orderDetails?.orderItems?.reduce((acc, item) =>
         acc + (item.price * item.quantity)//callback function that returns price total per item
         , 0) ?? 0;//0 is the starting value of acc
 
-    useEffect(() => {
-        const mockOrderDetails = {
-            _id: id,
-            createdAt: new Date(),
-            isPaid: true,
-            isDelivered: false,
-            paymentMethod: "PayPal",
-            shippingMethod: "Standard",
-            shippingAddress: {
-                city: "Manila",
-                country: "Philippines",
-
-            },
-            orderItems: [
-                {
-                    productId: "1",
-                    name: "Jacket",
-                    color: "black",
-                    size: "M",
-                    price: 100,
-                    quantity: 1,
-                    image: "https://picsum.photos/150?random=1",
-                },
-                {
-                    productId: "2",
-                    name: "Jeans",
-                    color: "maroon",
-                    size: "L",
-                    price: 135,
-                    quantity: 2,
-                    image: "https://picsum.photos/150?random=2",
-                },
-            ],
-        };
-        setOrderDetails(mockOrderDetails);
-    }, [id]);
-
-    if (!orderDetails) {
-        return <div className="animate-pulse">Loading order...</div>;
+    if (loading) {
+        return <p>Loading ...</p>
     }
 
+    if (error) {
+        return <p>Error: {error}</p>
+    }
 
     return (
         <div className="max-w-7xl mx-auto p-4 sm: py-6">
@@ -64,7 +37,8 @@ const OrderDetailsPage = () => {
                                 Order ID: #{orderDetails._id}
                             </h3>
                             <p className="text-gray-600">
-                                {new Date(orderDetails.createdAt).toLocaleDateString()}
+                                {new Date(orderDetails.createdAt).toLocaleDateString()}{" "}
+                                {new Date(orderDetails.createdAt).toLocaleTimeString()}
                             </p>
                         </div>
                         <div className="flex flex-col items-start sm:items-end mt-4 sm:mt-0">
