@@ -1,48 +1,29 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { fetchAllOrders, updateOrderStatus } from "../../redux/slices/adminOrderSlice";
 
 const OrderManagement = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth);
+    const { orders, loading, error } = useSelector((state) => state.adminOrders);
 
-    //fetch orders data from DB here
+    useEffect(() => {
+        if (!user || user.role !== "admin") {
+            navigate("/");
+        } else {
+            dispatch(fetchAllOrders());
+        }
+    }, [dispatch, user, navigate]);
 
-    const initialOrders = [
-        {
-            _id: 1111,
-            user: {
-                name: "Osama Jalandoni",
-            },
-            totalPrice: 110,
-            status: "processing",
 
-        },
-        {
-            _id: 2222,
-            user: {
-                name: "Yuko Aranara",
-            },
-            totalPrice: 77,
-            status: "shipped",
-
-        },
-        {
-            _id: 3333,
-            user: {
-                name: "Bamboo Norman",
-            },
-            totalPrice: 89,
-            status: "delivered",
-
-        },
-    ];
-
-    const [orders, setOrders] = useState(initialOrders);
-
-    const handleStatusChange = (orderId, newStatus) => {
-        console.log("id: ", orderId, "newStatus: ", newStatus);
-        const updatedOrders = orders.map((order) => {
-            return order._id === orderId ? { ...order, status: newStatus } : order;
-        });
-        setOrders(updatedOrders);
+    const handleStatusChange = (orderId, status) => {
+        dispatch(updateOrderStatus({ id: orderId, status }));
     };
+
+    if (loading) return <p>Loading ...</p>
+    if (error) return <p>Error: {error}</p>
 
     return (
         <div className="max-w-7xl mx-auto px-6 pt-2 pb-6">
@@ -67,7 +48,7 @@ const OrderManagement = () => {
                                         #{order._id}
                                     </td>
                                     <td className="p-4">{order.user.name}</td>
-                                    <td className="p-4">${order.totalPrice}</td>
+                                    <td className="p-4">${order.totalPrice.toFixed(2)}</td>
                                     <td className="p-4">
                                         <select name="status"
                                             value={order.status}
