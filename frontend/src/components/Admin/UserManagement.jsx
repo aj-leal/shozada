@@ -1,29 +1,26 @@
-import { useState } from "react"
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addUser, deleteUser, fetchUsers, updateUser } from "../../redux/slices/adminSlice";
+import { toast } from "sonner";
 
 const UserManagement = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth);
+    const { users, loading, error } = useSelector((state) => state.admin);
 
-    const initialUsers = [
-        {
-            _id: 1,
-            name: "Neji Kumar",
-            email: "neji.kumar@example.com",
-            role: "admin",
-        },
-        {
-            _id: 2,
-            name: "Garry Romanov",
-            email: "garry.r@example.com",
-            role: "customer",
-        },
-        {
-            _id: 3,
-            name: "Jini Song",
-            email: "song_jini@example.kr.com",
-            role: "admin",
-        },
-    ];
+    useEffect(() => {
+        if (user && user.role !== "admin") {
+            navigate("/");
+        }
+    }, [user, navigate]);
 
-    const [users, setUsers] = useState(initialUsers);
+    useEffect(() => {
+        if (user && user.role === "admin") {
+            dispatch(fetchUsers());
+        }
+    }, [dispatch, user]);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -38,10 +35,8 @@ const UserManagement = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
-        //Should send data to the DB
-        const newUser = { ...formData, _id: Math.max(...users.map(user => user._id), 0) + 1 }
-        setUsers([...users, newUser])
+        dispatch(addUser(formData));
+
         // reset the form after submission to the DB
         setFormData({
             name: "",
@@ -51,29 +46,22 @@ const UserManagement = () => {
         });
     };
 
-    const handleRoleChange = (userId, newRole) => {// Should do a patch method to update data on DB
-        console.log({ id: userId, role: newRole });
-        const updatedUsers = users.map((user) => {
-            if (user._id === userId) return { ...user, role: newRole };
-            return user;
-        });
-        setUsers(updatedUsers);
+    const handleRoleChange = (userId, newRole) => {
+        dispatch(updateUser({ id: userId, role: newRole }));
     };
 
     const handleDeleteUser = (userId) => {
-        //Should delete data from Db
-        const userToDelete = users.findIndex(user => user._id === userId);
-        console.log(users[userToDelete]);
         if (window.confirm("Are you sure you want to delete the user ?")) {
-            //Should send a request to DB to delete the user with the userId
-            const updatedUsers = users.filter((user) => user._id !== userId);
-            setUsers(updatedUsers);
+            dispatch(deleteUser(userId));
+            toast.success("User successfully deleted!", { duration: 2500 });
         }
     };
 
     return (
         <div className="max-w-7xl mx-auto px-6 pt-2 pb-6">
             <h2 className="text-3xl font-bold mb-8">User Management</h2>
+            {loading && <p>Loading ...</p>}
+            {error && <p>Error: {error}</p>}
             {/* Add New User Form */}
 
             <div className="p-6 rounded-lg mb-6">
