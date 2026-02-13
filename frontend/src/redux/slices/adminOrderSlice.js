@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/admin/orders`;
-const USER_TOKEN = `Bearer ${localStorage.getItem("userToken")}`;
 
 // Async Thunk to fetch all orders (admin only)
 export const fetchAllOrders = createAsyncThunk("adminOrders/fetchAllOrders",
@@ -11,7 +10,7 @@ export const fetchAllOrders = createAsyncThunk("adminOrders/fetchAllOrders",
             const response = await axios.get(API_URL,
                 {
                     headers: {
-                        Authorization: USER_TOKEN,
+                        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                     },
                 }
             );
@@ -30,7 +29,7 @@ export const updateOrderStatus = createAsyncThunk("adminOrders/updateOrderStatus
                 { status },
                 {
                     headers: {
-                        Authorization: USER_TOKEN,
+                        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                     }
                 }
             );
@@ -48,7 +47,7 @@ export const deleteOrder = createAsyncThunk("adminOrders/deleteOrder",
             await axios.delete(`${API_URL}/${id}`,
                 {
                     headers: {
-                        Authorization: USER_TOKEN,
+                        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                     }
                 }
             );
@@ -81,7 +80,7 @@ const adminOrderSlice = createSlice({
                 state.totalOrders = action.payload.length;
 
                 // Calculate the totalSales
-                const totalSales = action.payload.reduce((acc, order) => { return acc + order.totalPrice }, 0);
+                const totalSales = action.payload.reduce((acc, order) => acc + order.totalPrice, 0);
                 state.totalSales = totalSales;
             }).addCase(fetchAllOrders.rejected, (state, action) => {
                 state.loading = false;
@@ -98,8 +97,9 @@ const adminOrderSlice = createSlice({
             // Delete an order
             .addCase(deleteOrder.fulfilled, (state, action) => {
                 state.orders = state.orders.filter(
-                    (order) => { order._id !== action.payload }
+                    (order) => order._id !== action.payload
                 );
+                state.totalOrders = state.orders.length;
             })
     },
 });
