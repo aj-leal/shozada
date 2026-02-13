@@ -1,6 +1,14 @@
-import { useState } from "react"
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchProductDetails, updateProduct } from "../../redux/slices/productsSlice";
+import axios from "axios";
 
 const EditProductPage = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const { selectedProduct, loading, error } = useSelector((state) => state.products);
 
     const [productData, setProductData] = useState({
         name: "",
@@ -15,11 +23,21 @@ const EditProductPage = () => {
         collections: "",
         material: "",
         gender: "",
-        images: [
-            { url: "https://picsum.photos/150?random=1", altText: "Product 1", },
-            { url: "https://picsum.photos/150?random=2", altText: "Product 2", },
-        ],
+        images: [],
     });
+    const [uploading, setUploading] = useState(false);// Image uploading state
+
+    useEffect(() => {
+        if (id) {
+            dispatch(fetchProductDetails(id));
+        }
+    }, [dispatch, id]);
+
+    useEffect(() => {
+        if (selectedProduct) {
+            setProductData(selectedProduct);
+        }
+    }, [selectedProduct]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -28,12 +46,33 @@ const EditProductPage = () => {
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        console.log(file);
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            setUploading(true);
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "Authorization": `Bearer ${localStorage.getItem("userToken")}`,
+                    }
+                }
+            );
+            setProductData((prevData) => ({
+                ...prevData,
+                images: [...prevData.images, { url: data.imageUrl, altText: "" }],
+            }));
+            setUploading(false);
+        } catch (error) {
+            console.error(error);
+            setUploading(false);
+        }
     };
 
     const handleDeleteImg = (imageIndex) => {
         //request here deletion of the image to the cdn
-        //
         console.log("Image to be deleted: ", productData.images[imageIndex], "Index:", imageIndex);
         if (window.confirm("Are you sure you want to delete the image?")) {
             setProductData(product => ({ ...product, images: product.images.filter((_, index) => index !== imageIndex) }));
@@ -42,8 +81,12 @@ const EditProductPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(productData);
+        dispatch(updateProduct({ id, productData }));
+        navigate("/ctrl/products");
     };
+
+    if (loading) return <p>Loading ...</p>;
+    if (error) return <p>Error: {error}</p>;
 
     return (
         <div className="max-w-5xl mx-auto p-6 shadow-md rounded-md px-6 pt-2 pb-6">
@@ -132,6 +175,7 @@ const EditProductPage = () => {
                         onChange={handleImageUpload}
                         className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-base file:bg-blue-500 hover:file:bg-blue-400 file:text-white file:cursor-pointer"
                     />
+                    {uploading && <p>Uploading image ...</p>}
                     <p className="text-base font-medium my-4">(Click on an image below to delete it.)</p>
                     <div className="flex gap-4 mt-6">
                         {productData.images.map((image, index) => (
