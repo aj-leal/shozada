@@ -144,11 +144,12 @@ router.get("/orders", protectionMiddleware, adminMiddleware, async (req, res) =>
 
 router.put("/orders/:id", protectionMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const order = await Order.findById(req.params.id);
+        const order = await Order.findById(req.params.id).populate("user", "name");
         if (order) {//if order exist
-            order.status = req.body.status || order.status;
-            order.isDelivered = (req.body.status === "Delivered") || order.isDelivered;
-            order.deliveredAt = req.body.status === "Delivered" ? Date.now() : order.deliveredAt;
+            const newStatus = req.body.status || order.status;
+            order.status = newStatus;
+            order.isDelivered = newStatus.toLowerCase() === "delivered";
+            order.deliveredAt = newStatus.toLowerCase() === "delivered" ? Date.now() : order.deliveredAt;
 
             const updatedOrder = await order.save();
             res.json(updatedOrder);
@@ -172,8 +173,9 @@ router.delete("/orders/:id", protectionMiddleware, adminMiddleware, async (req, 
         if (order) {
             await order.deleteOne();
             res.json({ message: "Order successfully deleted." });
+        } else {
+            res.status(404).json({ message: "Order not found." });
         }
-        res.status(404).json({ message: "Order not found." });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Server error. " });
