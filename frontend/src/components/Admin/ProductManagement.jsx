@@ -1,42 +1,28 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { deleteProduct, fetchAdminProducts } from "../../redux/slices/adminProductSlice";
 
 const ProductManagement = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth);
+    const { products, loading, error } = useSelector((state) => state.adminProducts);
 
-    const initialProducts = [
-        {
-            _id: 111,
-            name: "Jeans",
-            price: 89,
-            sku: "PHJ1-GKL",
-        },
-        {
-            _id: 222,
-            name: "Jacket",
-            price: 100,
-            sku: "PHJ2-ADS",
-        },
-        {
-            _id: 333,
-            name: "Shorts",
-            price: 59,
-            sku: "PHS3-LPK",
-        },
-    ];
-
-    const [products, setProducts] = useState(initialProducts);
+    useEffect(() => {
+        dispatch(fetchAdminProducts());
+    }, [dispatch]);
 
     const handleProductDelete = (productId) => {
-
-        //Should delete data from Db
-        const productToDelete = products.findIndex(product => product._id === productId);
-        console.log(products[productToDelete]);
         if (window.confirm("Are you sure you want to delete the product ?")) {
-            //Should send a request to DB to delete the user with the userId
-            const updatedProducts = products.filter((product) => product._id !== productId);
-            setProducts(updatedProducts);
+            dispatch(deleteProduct(productId));
+            toast.success("Product successfully deleted.", { duration: 2500 });
         }
     };
+
+    if (loading) return <p>Loading ...</p>
+    if (error) return <p>Error: {error}</p>
 
     return (
         <div className="max-w-7xl mx-auto px-6 pt-2 pb-6">
