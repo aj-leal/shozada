@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addUser, deleteUser, fetchUsers, updateUser } from "../../redux/slices/adminSlice";
 import { toast } from "sonner";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 const UserManagement = () => {
+    const [showPassword, setShowPassword] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.auth);
@@ -72,6 +74,7 @@ const UserManagement = () => {
                         <input type="text" name="name"
                             value={formData.name}
                             onChange={handleChange}
+                            placeholder="John Smith"
                             className="w-full p-2 border rounded"
                             required
                         />
@@ -88,12 +91,24 @@ const UserManagement = () => {
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700">Password</label>
-                        <input type="password" name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded"
-                            required
-                        />
+                        <div className="relative">
+                            <input type={showPassword ? "text" : "password"}
+                                name="password"
+                                value={formData.password}
+                                placeholder="Enter password"
+                                onChange={handleChange}
+                                className="w-full p-2 border rounded"
+                                required
+                            />
+                            {/* Password visibility toggle */}
+                            <button type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                title={showPassword ? "Hide password" : "Show Password"}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer text-xl text-gray-600 hover:text-gray-800 p-1"
+                            >
+                                {showPassword ? <IoEyeOff /> : <IoEye />}
+                            </button>
+                        </div>
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700">Role</label>
